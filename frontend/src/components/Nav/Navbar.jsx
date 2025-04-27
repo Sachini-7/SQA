@@ -4,7 +4,7 @@ import Burger from './Burger';
 import logo from './logo.png'
 
 const Nav = styled.nav`
-  width: 100%;
+  width: 125%;
   height: 75px;
   border-bottom: 2px solid #f1f1f1;
   padding: 0 px;
