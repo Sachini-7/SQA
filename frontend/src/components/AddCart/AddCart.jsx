@@ -24,6 +24,7 @@ function AddCart() {
             try {
                 const response = await axios.get(`${BASE_URL}/Food/fetch/${foodId}`);
                 setFoodDetails(response.data);
+                setTotalPrice(response.data.price * quantity);
             } catch (error) {
                 console.error('Error fetching food details:', error);
                 setError('Error fetching food details');
@@ -31,7 +32,7 @@ function AddCart() {
         };
 
         fetchFoodDetails();
-    }, [foodId]);
+    }, [foodId, quantity]);
 
     const handleAddToCart = async () => {
         try {
@@ -115,6 +116,12 @@ function AddCart() {
         }
     };
 
+    const handleQuantityChange = (event) => {
+        const newQuantity = Math.max(1, parseInt(event.target.value)); // Ensure quantity is at least 1
+        setQuantity(newQuantity);
+        setTotalPrice(foodDetails.price * newQuantity); // Recalculate total price
+    };
+
 
     return (
         <div>
@@ -137,9 +144,10 @@ function AddCart() {
                                 type="number" 
                                 id="quantity" 
                                 value={quantity} 
-                                onChange={(e) => setQuantity(parseInt(e.target.value))} 
+                                // onChange={(e) => setQuantity(parseInt(e.target.value))} 
+                                onChange={handleQuantityChange}
                                 InputProps={{ inputProps: { min: 1 } }} 
-                                disabled
+                
                             />
                         </div>
                         <div style={{ marginTop: '40px' }} >
@@ -156,7 +164,7 @@ function AddCart() {
                         >
                             {loading ? 'Adding to Cart...' : '+ Add to Cart'}
                         </Button>
-                        <Button 
+                        {/* <Button 
                             onClick={handleremove} 
                             variant="contained" 
                             color="secondary"
@@ -171,10 +179,11 @@ function AddCart() {
                             }}
                         >
                             Remove
-                        </Button></div>
+                        </Button> */}
+                        </div>
                         {message && <Typography variant="body1">{message}</Typography>}
                         {error && <Typography variant="body1" color="error">{error}</Typography>}
-                        {totalPrice !== null && <Typography variant="h5">Total Price: ${totalPrice.toFixed(2)}</Typography>}
+                        {totalPrice !== null && <Typography variant="h5">Total Price: Rs. {totalPrice.toFixed(2)}</Typography>}
 
                        {/* <Button onClick={handleDisplayCart} disabled={!cartItemId} variant="contained">Display Cart Items</Button> */}
                     <br></br><br></br><br></br><br></br>

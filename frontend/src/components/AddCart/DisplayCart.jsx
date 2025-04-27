@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Box, Typography, Card, CardMedia, CardContent, IconButton, Button } from '@mui/material';
 import { Remove } from '@mui/icons-material';
 import { BASE_URL } from '../../config';
+import Swal from 'sweetalert2';
 function DisplayCart() {
     const { nic, cartItemId } = useParams();
     const navigate = useNavigate();
@@ -51,6 +52,35 @@ function DisplayCart() {
 
             await axios.delete(`${BASE_URL}/addCart/cartItems/${loggedInUserNIC}/${cartItemId}`);
             navigate(`/payment/${loggedInUserNIC}/${cartItemId}`); // Corrected the template literal syntax
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAlert = async () => {
+        try {
+            setLoading(true);
+            const loggedInUserNIC = localStorage.getItem('loggedInUserNIC');
+    
+            if (!loggedInUserNIC || !cartItemId) {
+                throw new Error('Invalid parameters');
+            }
+    
+            await axios.delete(`${BASE_URL}/addCart/cartItems/${loggedInUserNIC}/${cartItemId}`);
+            
+            // Show SweetAlert confirmation
+            Swal.fire({
+                title: 'Order Placed!',
+                text: 'Your order has been successfully placed.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+    
+            // Optionally, you can still navigate to the payment page after the alert is dismissed
+            // navigate(`/payment/${loggedInUserNIC}/${cartItemId}`);
+    
         } catch (error) {
             setError(error.message);
         } finally {
@@ -155,7 +185,7 @@ function DisplayCart() {
                     )}
                     <Button onClick={handleAddfoods} style={{ marginTop: '20px', marginRight: '10px', backgroundColor: 'Blue', color: 'white', marginLeft: '10px' }}>ADD More FOODS</Button>
                    
-                    <Button onClick={handlepayment} style={{ marginTop: '20px', marginRight: '10px', backgroundColor: 'green', color: 'white', marginLeft: '10px' }}>Confirm Order</Button>
+                    <Button onClick={handleAlert} style={{ marginTop: '20px', marginRight: '10px', backgroundColor: 'green', color: 'white', marginLeft: '10px' }}>Confirm Order</Button>
                 </Box>
             )}
         </Box>
