@@ -129,7 +129,7 @@ const firebaseConfig = {
       // Update customer data
       await axios.put(`${BASE_URL}/customers/updateCus/${nic}`, customer);
       console.log('Customer updated successfully');
-      alert('Customer updated successfully');
+      // alert('Customer updated successfully');
 
       // Navigate to another page after submission
       navigate(`/getUser/${nic}`); // Redirect to the user profile page

@@ -49,6 +49,10 @@ function DisplayCart() {
             if (!loggedInUserNIC || !cartItemId) {
                 throw new Error('Invalid parameters');
             }
+            
+            if (cartItems.length === 0) {
+                throw new Error('No items in the cart');
+            }
 
             await axios.delete(`${BASE_URL}/addCart/cartItems/${loggedInUserNIC}/${cartItemId}`);
             navigate(`/payment/${loggedInUserNIC}/${cartItemId}`); // Corrected the template literal syntax
@@ -66,6 +70,17 @@ function DisplayCart() {
     
             if (!loggedInUserNIC || !cartItemId) {
                 throw new Error('Invalid parameters');
+            }
+
+            if (totalPrice === 0) {
+                // Show SweetAlert error if the total price is 0
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Your cart is empty. Please add items before confirming the order.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return; // Stop further execution if the cart is empty
             }
     
             await axios.delete(`${BASE_URL}/addCart/cartItems/${loggedInUserNIC}/${cartItemId}`);
@@ -146,7 +161,10 @@ function DisplayCart() {
                     </Typography>
                     <hr />
                     <Box>
-                        {cartItems.map((item) => (
+                    {cartItems.length === 0 ? (
+                        <Typography>No items in the cart</Typography>
+                    ) : (
+                        cartItems.map((item) => (
                             <Card key={item.foodId._id} sx={{ display: 'flex', mb: 0.1 }}>
                                 <CardMedia
                                     component="img"
@@ -178,9 +196,10 @@ function DisplayCart() {
                                     </CardContent>
                                 </Box>
                             </Card>
-                        ))}
+                        ))
+                    )}
                     </Box>
-                    {totalPrice !== null && (
+                    {totalPrice > 0 && (
                         <Typography variant="h5" gutterBottom>Total Price: {totalPrice.toFixed(2)} LKR</Typography>
                     )}
                     <Button onClick={handleAddfoods} style={{ marginTop: '20px', marginRight: '10px', backgroundColor: 'Blue', color: 'white', marginLeft: '10px' }}>ADD More FOODS</Button>
